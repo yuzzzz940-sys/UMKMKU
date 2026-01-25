@@ -1,0 +1,167 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kasir Keren</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#667eea,#764ba2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+    .container{
+      width:100%;
+      max-width:900px;
+      background:#fff;
+      border-radius:20px;
+      padding:25px;
+      box-shadow:0 20px 40px rgba(0,0,0,0.2);
+      animation:fade 0.6s ease-in-out;
+    }
+    @keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}h1{
+  text-align:center;
+  margin-bottom:20px;
+  font-weight:700;
+  color:#4a3aff;
+}
+.form{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto;
+  gap:10px;
+  margin-bottom:20px;
+}
+input{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:14px;
+}
+input:focus{outline:none;border-color:#667eea}
+button{
+  padding:12px 18px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.2s;
+}
+button:hover{opacity:0.85;transform:scale(1.03)}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  border-radius:10px;
+  overflow:hidden;
+}
+th{
+  background:#667eea;
+  color:white;
+  padding:12px;
+  font-size:14px;
+}
+td{
+  padding:10px;
+  text-align:center;
+  border-bottom:1px solid #eee;
+}
+tr:hover{background:#f3f3ff}
+
+.total-box{
+  margin-top:20px;
+  padding:15px;
+  border-radius:15px;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:white;
+  font-size:20px;
+  font-weight:700;
+  text-align:right;
+}
+
+@media(max-width:700px){
+  .form{grid-template-columns:1fr}
+  button{width:100%}
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>💰 Kasir Digital</h1><div class="form">
+  <input type="text" id="nama" placeholder="Nama barang" />
+  <input type="number" id="harga" placeholder="Harga (contoh: 20000)" />
+  <input type="number" id="jumlah" value="1" placeholder="Jumlah" />
+  <button onclick="tambahBarang()">Tambah</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Nama Barang</th>
+      <th>Harga</th>
+      <th>Jumlah</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody id="list"></tbody>
+</table>
+
+<div class="total-box">Total: <span id="total">Rp 0</span></div>
+
+  </div>  <script>
+    let no = 1;
+    let total = 0;
+
+    function formatRupiah(angka){
+      return 'Rp ' + angka.toLocaleString('id-ID');
+    }
+
+    function normalisasiHarga(val){
+      // kalau input 10 → jadi 10000, 30 → jadi 30000
+      if(val < 1000){
+        return val * 1000;
+      }
+      return val;
+    }
+
+    function tambahBarang(){
+      const nama = document.getElementById('nama').value;
+      let harga = parseInt(document.getElementById('harga').value);
+      harga = normalisasiHarga(harga);
+      const jumlah = parseInt(document.getElementById('jumlah').value);
+
+      if(!nama || !harga || !jumlah){
+        alert('Lengkapi data terlebih dahulu');
+        return;
+      }
+
+      const subtotal = harga * jumlah;
+      total += subtotal;
+
+      const tbody = document.getElementById('list');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${no++}</td>
+        <td>${nama}</td>
+        <td>${formatRupiah(harga)}</td>
+        <td>${jumlah}</td>
+        <td>${formatRupiah(subtotal)}</td>
+      `;
+      tbody.appendChild(row);
+
+      document.getElementById('total').innerText = formatRupiah(total);
+
+      document.getElementById('nama').value='';
+      document.getElementById('harga').value='';
+      document.getElementById('jumlah').value=1;
+    }
+  </script></body>
+  </html>
