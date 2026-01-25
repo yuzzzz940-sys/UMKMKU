@@ -1,6 +1,7 @@
 <!DOCTYPE html><html lang="id">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kasir Keren</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
@@ -164,4 +165,74 @@ tr:hover{background:#f3f3ff}
       document.getElementById('jumlah').value=1;
     }
   </script></body>
+</html>  <input type="text" id="nama" placeholder="Nama barang" />
+  <input type="number" id="harga" placeholder="Harga (contoh: 20000)" />
+  <input type="number" id="jumlah" value="1" placeholder="Jumlah" />
+  <button onclick="tambahBarang()">Tambah</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Nama Barang</th>
+      <th>Harga</th>
+      <th>Jumlah</th>
+      <th>Subtotal</th>
+    </tr>
+  </thead>
+  <tbody id="list"></tbody>
+</table>
+
+<div class="total-box">Total: <span id="total">Rp 0</span></div>
+
+  </div>  <script>
+    let no = 1;
+    let total = 0;
+
+    function formatRupiah(angka){
+      return 'Rp ' + angka.toLocaleString('id-ID');
+    }
+
+    function normalisasiHarga(val){
+      // kalau input 10 → jadi 10000, 30 → jadi 30000
+      if(val < 1000){
+        return val * 1000;
+      }
+      return val;
+    }
+
+    function tambahBarang(){
+      const nama = document.getElementById('nama').value;
+      let harga = parseInt(document.getElementById('harga').value);
+      harga = normalisasiHarga(harga);
+      const jumlah = parseInt(document.getElementById('jumlah').value);
+
+      if(!nama || !harga || !jumlah){
+        alert('Lengkapi data terlebih dahulu');
+        return;
+      }
+
+      const subtotal = harga * jumlah;
+      total += subtotal;
+
+      const tbody = document.getElementById('list');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${no++}</td>
+        <td>${nama}</td>
+        <td>${formatRupiah(harga)}</td>
+        <td>${jumlah}</td>
+        <td>${formatRupiah(subtotal)}</td>
+      `;
+      tbody.appendChild(row);
+
+      document.getElementById('total').innerText = formatRupiah(total);
+
+      document.getElementById('nama').value='';
+      document.getElementById('harga').value='';
+      document.getElementById('jumlah').value=1;
+    }
+  </script></body>
   </html>
+
