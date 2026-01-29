@@ -20,28 +20,29 @@ body{
   background:linear-gradient(135deg,var(--bg1),var(--bg2));
   min-height:100vh;color:var(--text);
 }
-.container{max-width:1300px;margin:auto;padding:20px;}
+.container{max-width:1200px;margin:auto;padding:20px;}
 h1{text-align:center;font-family:'Poppins';animation:move 3s infinite alternate;}
 @keyframes move{from{letter-spacing:2px;}to{letter-spacing:6px;}}
 .toggle{text-align:center;margin-bottom:10px;}
 .toggle button{background:var(--btn);color:white;border:none;padding:8px 18px;border-radius:20px;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:25px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 @media(max-width:768px){.grid{grid-template-columns:1fr;}}
-.box{background:var(--box);border-radius:18px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,.3);}
-.menu-list{max-height:500px;overflow-y:auto;}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;}
-.product{background:var(--card);border-radius:12px;padding:12px;text-align:center;}
-.product span{display:block;margin-bottom:8px;font-weight:600;}
-button{background:var(--btn);color:white;border:none;padding:7px 16px;border-radius:8px;}
+.box{background:var(--box);border-radius:18px;padding:15px;box-shadow:0 8px 20px rgba(0,0,0,.3);}
+.tabs{display:flex;gap:10px;margin-bottom:10px;}
+.tabs button{flex:1;background:var(--btn);color:white;border:none;padding:8px;border-radius:10px;}
+.menu-list{max-height:400px;overflow-y:auto;}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
+.product{background:var(--card);border-radius:12px;padding:10px;text-align:center;}
+.product span{display:block;margin-bottom:5px;font-weight:600;font-size:14px;}
+button{background:var(--btn);color:white;border:none;padding:6px 12px;border-radius:8px;}
 .delete{background:#e74c3c;}
-.cart-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #aaa;padding:6px 0;}
-.total{font-weight:bold;font-size:18px;text-align:right;margin-top:10px;}
+.cart-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #aaa;padding:5px 0;}
+.total{font-weight:bold;font-size:16px;text-align:right;margin-top:8px;}
 input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:1px solid #ccc;}
 .reset{background:#2ecc71;width:100%;margin-top:5px;}
 .print{background:#3498db;width:100%;margin-top:5px;}
 
-/* STRUK */
-#receipt{display:none;}
+#receipt{visibility:hidden;}
 @media print{
   body *{visibility:hidden;}
   #receipt, #receipt *{visibility:visible;}
@@ -62,8 +63,15 @@ input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:1px solid 
 
 <div class="box">
 <h2>Menu</h2>
+
+<div class="tabs">
+<button onclick="showMenu('food')">Makanan</button>
+<button onclick="showMenu('drink')">Minuman</button>
+</div>
+
 <div class="menu-list">
-<div class="products">
+
+<div id="food" class="products">
 
 <div class="product"><span>Burger<br>Rp 20.000</span><button onclick="addItem('Burger',20000)">Tambah</button></div>
 <div class="product"><span>Pizza<br>Rp 25.000</span><button onclick="addItem('Pizza',25000)">Tambah</button></div>
@@ -72,11 +80,67 @@ input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:1px solid 
 <div class="product"><span>Ramen<br>Rp 23.000</span><button onclick="addItem('Ramen',23000)">Tambah</button></div>
 <div class="product"><span>Takoyaki<br>Rp 14.000</span><button onclick="addItem('Takoyaki',14000)">Tambah</button></div>
 <div class="product"><span>Dimsum<br>Rp 13.000</span><button onclick="addItem('Dimsum',13000)">Tambah</button></div>
-<div class="product"><span>Corndog<br>Rp 16.000</span><button onclick="addItem('Corndog',16000)">Tambah</button></div>
+<div class="product"><span>Corndog Korea<br>Rp 16.000</span><button onclick="addItem('Corndog Korea',16000)">Tambah</button></div>
 <div class="product"><span>Spaghetti<br>Rp 22.000</span><button onclick="addItem('Spaghetti',22000)">Tambah</button></div>
-<div class="product"><span>Milkshake<br>Rp 15.000</span><button onclick="addItem('Milkshake',15000)">Tambah</button></div>
+<div class="product"><span>Chicken Wings<br>Rp 21.000</span><button onclick="addItem('Chicken Wings',21000)">Tambah</button></div>
+<div class="product"><span>Sandwich<br>Rp 14.000</span><button onclick="addItem('Sandwich',14000)">Tambah</button></div>
+<div class="product"><span>Lasagna<br>Rp 26.000</span><button onclick="addItem('Lasagna',26000)">Tambah</button></div>
+<div class="product"><span>Ayam Geprek<br>Rp 18.000</span><button onclick="addItem('Ayam Geprek',18000)">Tambah</button></div>
+<div class="product"><span>Ayam Crispy<br>Rp 19.000</span><button onclick="addItem('Ayam Crispy',19000)">Tambah</button></div>
+<div class="product"><span>Nasi Goreng Modern<br>Rp 20.000</span><button onclick="addItem('Nasi Goreng Modern',20000)">Tambah</button></div>
+<div class="product"><span>Rice Bowl Teriyaki<br>Rp 22.000</span><button onclick="addItem('Rice Bowl Teriyaki',22000)">Tambah</button></div>
+<div class="product"><span>Rice Bowl BBQ<br>Rp 22.000</span><button onclick="addItem('Rice Bowl BBQ',22000)">Tambah</button></div>
+<div class="product"><span>Steak Ayam<br>Rp 27.000</span><button onclick="addItem('Steak Ayam',27000)">Tambah</button></div>
+<div class="product"><span>Steak Sapi<br>Rp 35.000</span><button onclick="addItem('Steak Sapi',35000)">Tambah</button></div>
+<div class="product"><span>Fish & Chips<br>Rp 28.000</span><button onclick="addItem('Fish & Chips',28000)">Tambah</button></div>
+<div class="product"><span>Chicken Katsu<br>Rp 24.000</span><button onclick="addItem('Chicken Katsu',24000)">Tambah</button></div>
+<div class="product"><span>Chicken Teriyaki<br>Rp 24.000</span><button onclick="addItem('Chicken Teriyaki',24000)">Tambah</button></div>
+<div class="product"><span>Chicken Blackpepper<br>Rp 24.000</span><button onclick="addItem('Chicken Blackpepper',24000)">Tambah</button></div>
+<div class="product"><span>Beef Blackpepper<br>Rp 30.000</span><button onclick="addItem('Beef Blackpepper',30000)">Tambah</button></div>
+<div class="product"><span>Udang Crispy<br>Rp 26.000</span><button onclick="addItem('Udang Crispy',26000)">Tambah</button></div>
+<div class="product"><span>Onion Ring<br>Rp 12.000</span><button onclick="addItem('Onion Ring',12000)">Tambah</button></div>
+<div class="product"><span>Nachos<br>Rp 15.000</span><button onclick="addItem('Nachos',15000)">Tambah</button></div>
+<div class="product"><span>Loaded Fries<br>Rp 18.000</span><button onclick="addItem('Loaded Fries',18000)">Tambah</button></div>
+<div class="product"><span>Chicken Popcorn<br>Rp 17.000</span><button onclick="addItem('Chicken Popcorn',17000)">Tambah</button></div>
+<div class="product"><span>Tortilla Wrap<br>Rp 19.000</span><button onclick="addItem('Tortilla Wrap',19000)">Tambah</button></div>
 
 </div>
+
+<div id="drink" class="products" style="display:none;">
+
+<div class="product"><span>Es Teh<br>Rp 5.000</span><button onclick="addItem('Es Teh',5000)">Tambah</button></div>
+<div class="product"><span>Es Jeruk<br>Rp 6.000</span><button onclick="addItem('Es Jeruk',6000)">Tambah</button></div>
+<div class="product"><span>Kopi Hitam<br>Rp 7.000</span><button onclick="addItem('Kopi Hitam',7000)">Tambah</button></div>
+<div class="product"><span>Kopi Susu<br>Rp 12.000</span><button onclick="addItem('Kopi Susu',12000)">Tambah</button></div>
+<div class="product"><span>Americano<br>Rp 15.000</span><button onclick="addItem('Americano',15000)">Tambah</button></div>
+<div class="product"><span>Cappuccino<br>Rp 18.000</span><button onclick="addItem('Cappuccino',18000)">Tambah</button></div>
+<div class="product"><span>Latte<br>Rp 18.000</span><button onclick="addItem('Latte',18000)">Tambah</button></div>
+<div class="product"><span>Matcha Latte<br>Rp 20.000</span><button onclick="addItem('Matcha Latte',20000)">Tambah</button></div>
+<div class="product"><span>Taro Latte<br>Rp 20.000</span><button onclick="addItem('Taro Latte',20000)">Tambah</button></div>
+<div class="product"><span>Red Velvet Latte<br>Rp 20.000</span><button onclick="addItem('Red Velvet Latte',20000)">Tambah</button></div>
+<div class="product"><span>Milkshake Vanilla<br>Rp 15.000</span><button onclick="addItem('Milkshake Vanilla',15000)">Tambah</button></div>
+<div class="product"><span>Milkshake Coklat<br>Rp 15.000</span><button onclick="addItem('Milkshake Coklat',15000)">Tambah</button></div>
+<div class="product"><span>Milkshake Strawberry<br>Rp 15.000</span><button onclick="addItem('Milkshake Strawberry',15000)">Tambah</button></div>
+<div class="product"><span>Boba Milk Tea<br>Rp 18.000</span><button onclick="addItem('Boba Milk Tea',18000)">Tambah</button></div>
+<div class="product"><span>Thai Tea<br>Rp 16.000</span><button onclick="addItem('Thai Tea',16000)">Tambah</button></div>
+<div class="product"><span>Lemon Tea<br>Rp 10.000</span><button onclick="addItem('Lemon Tea',10000)">Tambah</button></div>
+<div class="product"><span>Peach Tea<br>Rp 12.000</span><button onclick="addItem('Peach Tea',12000)">Tambah</button></div>
+<div class="product"><span>Lychee Tea<br>Rp 12.000</span><button onclick="addItem('Lychee Tea',12000)">Tambah</button></div>
+<div class="product"><span>Yakult Float<br>Rp 14.000</span><button onclick="addItem('Yakult Float',14000)">Tambah</button></div>
+<div class="product"><span>Choco Float<br>Rp 14.000</span><button onclick="addItem('Choco Float',14000)">Tambah</button></div>
+<div class="product"><span>Vanilla Float<br>Rp 14.000</span><button onclick="addItem('Vanilla Float',14000)">Tambah</button></div>
+<div class="product"><span>Mango Smoothies<br>Rp 18.000</span><button onclick="addItem('Mango Smoothies',18000)">Tambah</button></div>
+<div class="product"><span>Strawberry Smoothies<br>Rp 18.000</span><button onclick="addItem('Strawberry Smoothies',18000)">Tambah</button></div>
+<div class="product"><span>Avocado Smoothies<br>Rp 20.000</span><button onclick="addItem('Avocado Smoothies',20000)">Tambah</button></div>
+<div class="product"><span>Chocolate Frappe<br>Rp 22.000</span><button onclick="addItem('Chocolate Frappe',22000)">Tambah</button></div>
+<div class="product"><span>Caramel Frappe<br>Rp 22.000</span><button onclick="addItem('Caramel Frappe',22000)">Tambah</button></div>
+<div class="product"><span>Oreo Frappe<br>Rp 22.000</span><button onclick="addItem('Oreo Frappe',22000)">Tambah</button></div>
+<div class="product"><span>Blue Ocean Soda<br>Rp 12.000</span><button onclick="addItem('Blue Ocean Soda',12000)">Tambah</button></div>
+<div class="product"><span>Green Apple Soda<br>Rp 12.000</span><button onclick="addItem('Green Apple Soda',12000)">Tambah</button></div>
+<div class="product"><span>Cola Float<br>Rp 13.000</span><button onclick="addItem('Cola Float',13000)">Tambah</button></div>
+
+</div>
+
 </div>
 </div>
 
@@ -97,7 +161,6 @@ input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:1px solid 
 </div>
 </div>
 
-<!-- STRUK -->
 <div id="receipt">
 <h2 style="text-align:center;">STRUK PEMBAYARAN</h2>
 <p id="rItems"></p>
@@ -111,6 +174,10 @@ input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:1px solid 
 let cartData={}, total=0;
 
 function toggleMode(){document.body.classList.toggle("dark");}
+function showMenu(type){
+  document.getElementById("food").style.display = type==="food"?"grid":"none";
+  document.getElementById("drink").style.display = type==="drink"?"grid":"none";
+}
 function formatRupiah(num){return "Rp "+num.toLocaleString("id-ID");}
 function formatInput(el){
   let v=el.value.replace(/\D/g,"");
@@ -157,7 +224,11 @@ function printReceipt(){
   document.getElementById("rTotal").innerText="Total: "+formatRupiah(total);
   document.getElementById("rPay").innerText="Bayar: "+formatRupiah(getPay());
   document.getElementById("rChange").innerText="Kembalian: "+formatRupiah(getPay()-total);
+
+  const receipt=document.getElementById("receipt");
+  receipt.style.visibility="visible";
   window.print();
+  receipt.style.visibility="hidden";
 }
 </script>
 
