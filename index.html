@@ -1,150 +1,165 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kasir Digital</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:'Poppins',sans-serif;
-      background:linear-gradient(135deg,#667eea,#764ba2);
-      display:flex;
-      justify-content:center;
-      padding:20px;
-    }
-    .container{
-      width:100%;
-      max-width:500px; /* dipersempit biar aman di HP */
-      background:#fff;
-      border-radius:20px;
-      padding:20px;
-      box-shadow:0 15px 35px rgba(0,0,0,0.2);
-    }
-    h1{
-      text-align:center;
-      margin-bottom:15px;
-      color:#4a3aff;
-    }
-    .form{
-      display:flex;
-      flex-direction:column; /* PAKSA JADI KE BAWAH */
-      gap:10px;
-      margin-bottom:15px;
-    }
-    input{
-      padding:12px;
-      border-radius:10px;
-      border:1px solid #ddd;
-      font-size:14px;
-      width:100%;
-    }
-    button{
-      padding:12px;
-      border:none;
-      border-radius:10px;
-      background:linear-gradient(135deg,#667eea,#764ba2);
-      color:#fff;
-      font-weight:600;
-      cursor:pointer;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-    }
-    th{
-      background:#667eea;
-      color:#fff;
-      padding:8px;
-      font-size:12px;
-    }
-    td{
-      padding:8px;
-      text-align:center;
-      border-bottom:1px solid #eee;
-      font-size:12px;
-    }
-    .total-box{
-      margin-top:15px;
-      padding:12px;
-      border-radius:15px;
-      background:linear-gradient(135deg,#667eea,#764ba2);
-      color:white;
-      font-size:16px;
-      font-weight:700;
-      text-align:right;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kasir Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg1:#6a11cb; --bg2:#8e2de2; --box:#ffffff;
+  --text:#333; --card:#f3e8ff; --btn:#8e2de2;
+}
+body.dark{
+  --bg1:#1a052b; --bg2:#2d0a4f; --box:#2a0f44;
+  --text:#fff; --card:#3b165f; --btn:#b26cff;
+}
+body{
+  margin:0;font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  min-height:100vh;color:var(--text);
+}
+.container{max-width:1300px;margin:auto;padding:20px;}
+h1{text-align:center;font-family:'Poppins';animation:move 3s infinite alternate;}
+@keyframes move{from{letter-spacing:2px;}to{letter-spacing:6px;}}
+.toggle{text-align:center;margin-bottom:10px;}
+.toggle button{background:var(--btn);color:white;border:none;padding:8px 18px;border-radius:20px;}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:25px;}
+@media(max-width:768px){.grid{grid-template-columns:1fr;}}
+.box{background:var(--box);border-radius:18px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,.3);}
+.menu-list{max-height:500px;overflow-y:auto;}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px;}
+.product{background:var(--card);border-radius:12px;padding:12px;text-align:center;}
+.product span{display:block;margin-bottom:8px;font-weight:600;}
+button{background:var(--btn);color:white;border:none;padding:7px 16px;border-radius:8px;}
+.delete{background:#e74c3c;}
+.cart-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #aaa;padding:6px 0;}
+.total{font-weight:bold;font-size:18px;text-align:right;margin-top:10px;}
+input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:1px solid #ccc;}
+.reset{background:#2ecc71;width:100%;margin-top:5px;}
+.print{background:#3498db;width:100%;margin-top:5px;}
+
+/* STRUK */
+#receipt{display:none;}
+@media print{
+  body *{visibility:hidden;}
+  #receipt, #receipt *{visibility:visible;}
+  #receipt{position:absolute;top:0;left:0;width:100%;}
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>💰 Kasir Digital</h1>
-    <div class="form">
-      <input type="text" id="nama" placeholder="Nama barang">
-      <input type="number" id="harga" placeholder="Harga (contoh: 20000)">
-      <input type="number" id="jumlah" value="1">
-      <button onclick="tambahBarang()">Tambah</button>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>Nama</th>
-          <th>Harga</th>
-          <th>Qty</th>
-          <th>Subtotal</th>
-        </tr>
-      </thead>
-      <tbody id="list"></tbody>
-    </table>
-    <div class="total-box">Total: <span id="total">Rp 0</span></div>
-  </div>
-  <script>
-    let no = 1;
-    let total = 0;function formatRupiah(angka){
-  return 'Rp ' + angka.toLocaleString('id-ID');
-}
 
-function normalisasiHarga(val){
-  if(val < 1000){
-    return val * 1000;
+<div class="container">
+<h1>Kasir Digital</h1>
+
+<div class="toggle">
+<button onclick="toggleMode()">Dark Purple Mode</button>
+</div>
+
+<div class="grid">
+
+<div class="box">
+<h2>Menu</h2>
+<div class="menu-list">
+<div class="products">
+
+<div class="product"><span>Burger<br>Rp 20.000</span><button onclick="addItem('Burger',20000)">Tambah</button></div>
+<div class="product"><span>Pizza<br>Rp 25.000</span><button onclick="addItem('Pizza',25000)">Tambah</button></div>
+<div class="product"><span>Hotdog<br>Rp 15.000</span><button onclick="addItem('Hotdog',15000)">Tambah</button></div>
+<div class="product"><span>Kebab<br>Rp 17.000</span><button onclick="addItem('Kebab',17000)">Tambah</button></div>
+<div class="product"><span>Ramen<br>Rp 23.000</span><button onclick="addItem('Ramen',23000)">Tambah</button></div>
+<div class="product"><span>Takoyaki<br>Rp 14.000</span><button onclick="addItem('Takoyaki',14000)">Tambah</button></div>
+<div class="product"><span>Dimsum<br>Rp 13.000</span><button onclick="addItem('Dimsum',13000)">Tambah</button></div>
+<div class="product"><span>Corndog<br>Rp 16.000</span><button onclick="addItem('Corndog',16000)">Tambah</button></div>
+<div class="product"><span>Spaghetti<br>Rp 22.000</span><button onclick="addItem('Spaghetti',22000)">Tambah</button></div>
+<div class="product"><span>Milkshake<br>Rp 15.000</span><button onclick="addItem('Milkshake',15000)">Tambah</button></div>
+
+</div>
+</div>
+</div>
+
+<div class="box">
+<h2>Keranjang</h2>
+<div id="cart"></div>
+<div class="total">Total: <span id="total">Rp 0</span></div>
+
+<label>Uang Bayar</label>
+<input type="text" id="pay" placeholder="100.000" oninput="formatInput(this)">
+<div class="total">Kembalian: <span id="change">Rp 0</span></div>
+
+<button onclick="calculateChange()">Hitung</button>
+<button class="print" onclick="printReceipt()">Cetak Struk</button>
+<button class="reset" onclick="resetCart()">Transaksi Baru</button>
+</div>
+
+</div>
+</div>
+
+<!-- STRUK -->
+<div id="receipt">
+<h2 style="text-align:center;">STRUK PEMBAYARAN</h2>
+<p id="rItems"></p>
+<p id="rTotal"></p>
+<p id="rPay"></p>
+<p id="rChange"></p>
+<p style="text-align:center;">Terima Kasih</p>
+</div>
+
+<script>
+let cartData={}, total=0;
+
+function toggleMode(){document.body.classList.toggle("dark");}
+function formatRupiah(num){return "Rp "+num.toLocaleString("id-ID");}
+function formatInput(el){
+  let v=el.value.replace(/\D/g,"");
+  el.value=v.replace(/\B(?=(\d{3})+(?!\d))/g,".");
+}
+function getPay(){return parseInt(document.getElementById("pay").value.replace(/\./g,""))||0;}
+
+function renderCart(){
+  const cart=document.getElementById("cart");
+  cart.innerHTML=""; total=0;
+  for(let item in cartData){
+    let d=cartData[item];
+    let div=document.createElement("div");
+    div.className="cart-item";
+    div.innerHTML=`${item} x${d.qty} - ${formatRupiah(d.price*d.qty)}`;
+    let b=document.createElement("button");
+    b.textContent="Hapus"; b.className="delete";
+    b.onclick=()=>{delete cartData[item];renderCart();}
+    div.appendChild(b); cart.appendChild(div);
+    total+=d.price*d.qty;
   }
-  return val;
+  document.getElementById("total").innerText=formatRupiah(total);
 }
-
-function tambahBarang(){
-  const nama = document.getElementById('nama').value;
-  let harga = parseInt(document.getElementById('harga').value);
-  const jumlah = parseInt(document.getElementById('jumlah').value);
-
-  if(!nama || !harga || !jumlah){
-    alert('Lengkapi data terlebih dahulu');
-    return;
+function addItem(name,price){
+  cartData[name]?cartData[name].qty++:cartData[name]={price,qty:1};
+  renderCart();
+}
+function calculateChange(){
+  let change=getPay()-total;
+  document.getElementById("change").innerText=formatRupiah(change>0?change:0);
+}
+function resetCart(){
+  cartData={};renderCart();
+  document.getElementById("pay").value="";
+  document.getElementById("change").innerText="Rp 0";
+}
+function printReceipt(){
+  let text="";
+  for(let i in cartData){
+    let d=cartData[i];
+    text+=`${i} x${d.qty} = ${formatRupiah(d.price*d.qty)}<br>`;
   }
-
-  harga = normalisasiHarga(harga);
-  const subtotal = harga * jumlah;
-  total += subtotal;
-
-  const tbody = document.getElementById('list');
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td>${no++}</td>
-    <td>${nama}</td>
-    <td>${formatRupiah(harga)}</td>
-    <td>${jumlah}</td>
-    <td>${formatRupiah(subtotal)}</td>
-  `;
-  tbody.appendChild(row);
-
-  document.getElementById('total').innerText = formatRupiah(total);
-  document.getElementById('nama').value='';
-  document.getElementById('harga').value='';
-  document.getElementById('jumlah').value=1;
+  document.getElementById("rItems").innerHTML=text;
+  document.getElementById("rTotal").innerText="Total: "+formatRupiah(total);
+  document.getElementById("rPay").innerText="Bayar: "+formatRupiah(getPay());
+  document.getElementById("rChange").innerText="Kembalian: "+formatRupiah(getPay()-total);
+  window.print();
 }
+</script>
 
-  </script>
 </body>
 </html>
