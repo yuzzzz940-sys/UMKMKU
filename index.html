@@ -2,235 +2,317 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kasir Digital</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root{
-  --bg1:#6a11cb; --bg2:#8e2de2; --box:#ffffff;
-  --text:#333; --card:#f3e8ff; --btn:#8e2de2;
-}
-body.dark{
-  --bg1:#1a052b; --bg2:#2d0a4f; --box:#2a0f44;
-  --text:#fff; --card:#3b165f; --btn:#b26cff;
-}
+*{box-sizing:border-box;font-family:Poppins,Arial}
 body{
-  margin:0;font-family:'Segoe UI',sans-serif;
-  background:linear-gradient(135deg,var(--bg1),var(--bg2));
-  min-height:100vh;color:var(--text);
+margin:0;
+background:linear-gradient(180deg,#12001f,#2a0045);
+color:white;
 }
-.container{max-width:1200px;margin:auto;padding:20px;}
-h1{text-align:center;font-family:'Poppins';animation:move 3s infinite alternate;}
-@keyframes move{from{letter-spacing:2px;}to{letter-spacing:6px;}}
-.toggle{text-align:center;margin-bottom:10px;}
-.toggle button{background:var(--btn);color:white;border:none;padding:8px 18px;border-radius:20px;}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-@media(max-width:768px){.grid{grid-template-columns:1fr;}}
-.box{background:var(--box);border-radius:18px;padding:15px;box-shadow:0 8px 20px rgba(0,0,0,.3);}
-.tabs{display:flex;gap:10px;margin-bottom:10px;}
-.tabs button{flex:1;background:var(--btn);color:white;border:none;padding:8px;border-radius:10px;}
-.menu-list{max-height:400px;overflow-y:auto;}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;}
-.product{background:var(--card);border-radius:12px;padding:10px;text-align:center;}
-.product span{display:block;margin-bottom:5px;font-weight:600;font-size:14px;}
-button{background:var(--btn);color:white;border:none;padding:6px 12px;border-radius:8px;}
-.delete{background:#e74c3c;}
-.cart-item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #aaa;padding:5px 0;}
-.total{font-weight:bold;font-size:16px;text-align:right;margin-top:8px;}
-input{width:100%;padding:10px;margin-top:5px;border-radius:8px;border:1px solid #ccc;}
-.reset{background:#2ecc71;width:100%;margin-top:5px;}
-.print{background:#3498db;width:100%;margin-top:5px;}
 
-#receipt{visibility:hidden;}
+.container{padding:15px;}
+
+.box{
+background:linear-gradient(180deg,#3a0a63,#2a0045);
+border-radius:20px;
+padding:15px;
+margin-bottom:15px;
+box-shadow:0 0 20px rgba(0,0,0,.3);
+}
+
+h1{overflow:hidden;white-space:nowrap}
+.marquee{
+display:inline-block;
+animation:scrollText 8s linear infinite;
+}
+@keyframes scrollText{
+0%{transform:translateX(100%)}
+100%{transform:translateX(-100%)}
+}
+
+/* tombol tambah menu kecil */
+.addMenuBtn{
+position:absolute;
+top:10px;
+left:10px;
+border:none;
+border-radius:20px;
+padding:4px 10px;
+background:#c77dff;
+color:black;
+font-size:12px;
+font-weight:bold;
+}
+
+/* menu area */
+.menu-area{
+height:40vh;
+overflow-y:auto;
+margin-top:10px;
+}
+
+.search{
+width:100%;
+padding:10px;
+border-radius:10px;
+border:none;
+margin-bottom:10px;
+}
+
+.tab{display:flex;gap:10px;margin-bottom:10px;}
+.tab button{
+flex:1;
+padding:8px;
+border:none;
+border-radius:15px;
+background:#b87cff;
+color:white;
+font-weight:bold;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+}
+.item{
+background:#4a197a;
+border-radius:15px;
+padding:10px;
+text-align:center;
+}
+.item button{
+margin-top:5px;
+border:none;
+border-radius:10px;
+padding:5px;
+background:#c77dff;
+font-weight:bold;
+}
+
+input,select{
+width:100%;
+padding:10px;
+border-radius:10px;
+border:none;
+margin-top:5px;
+}
+.btn{
+margin-top:8px;
+padding:10px;
+border:none;
+border-radius:15px;
+font-weight:bold;
+background:#c77dff;
+}
+.btn-blue{background:#3aa2ff}
+.btn-green{background:#33d17a}
+
+#addMenuPage{display:none}
+
+/* PRINT STRUK */
 @media print{
-  body *{visibility:hidden;}
-  #receipt, #receipt *{visibility:visible;}
-  #receipt{position:absolute;top:0;left:0;width:100%;}
+body *{visibility:hidden;}
+#cartPage, #cartPage *{visibility:visible;}
+#cartPage{position:absolute;left:0;top:0;width:100%;}
 }
 </style>
 </head>
+
 <body>
-
 <div class="container">
-<h1>Kasir Digital</h1>
 
-<div class="toggle">
-<button onclick="toggleMode()">Dark Purple Mode</button>
+<div id="menuPage" class="box" style="position:relative;">
+<button class="addMenuBtn" onclick="openAddMenu()">+ Menu</button>
+
+<h1><span class="marquee">Kasir Digital</span></h1>
+
+<input type="text" class="search" id="search" placeholder="Cari menu..." onkeyup="renderMenu()">
+
+<div class="tab">
+<button onclick="showFood()">Makanan</button>
+<button onclick="showDrink()">Minuman</button>
 </div>
 
-<div class="grid">
-
-<div class="box">
-<h2>Menu</h2>
-
-<div class="tabs">
-<button onclick="showMenu('food')">Makanan</button>
-<button onclick="showMenu('drink')">Minuman</button>
-</div>
-
-<div class="menu-list">
-
-<div id="food" class="products">
-
-<div class="product"><span>Burger<br>Rp 20.000</span><button onclick="addItem('Burger',20000)">Tambah</button></div>
-<div class="product"><span>Pizza<br>Rp 25.000</span><button onclick="addItem('Pizza',25000)">Tambah</button></div>
-<div class="product"><span>Hotdog<br>Rp 15.000</span><button onclick="addItem('Hotdog',15000)">Tambah</button></div>
-<div class="product"><span>Kebab<br>Rp 17.000</span><button onclick="addItem('Kebab',17000)">Tambah</button></div>
-<div class="product"><span>Ramen<br>Rp 23.000</span><button onclick="addItem('Ramen',23000)">Tambah</button></div>
-<div class="product"><span>Takoyaki<br>Rp 14.000</span><button onclick="addItem('Takoyaki',14000)">Tambah</button></div>
-<div class="product"><span>Dimsum<br>Rp 13.000</span><button onclick="addItem('Dimsum',13000)">Tambah</button></div>
-<div class="product"><span>Corndog Korea<br>Rp 16.000</span><button onclick="addItem('Corndog Korea',16000)">Tambah</button></div>
-<div class="product"><span>Spaghetti<br>Rp 22.000</span><button onclick="addItem('Spaghetti',22000)">Tambah</button></div>
-<div class="product"><span>Chicken Wings<br>Rp 21.000</span><button onclick="addItem('Chicken Wings',21000)">Tambah</button></div>
-<div class="product"><span>Sandwich<br>Rp 14.000</span><button onclick="addItem('Sandwich',14000)">Tambah</button></div>
-<div class="product"><span>Lasagna<br>Rp 26.000</span><button onclick="addItem('Lasagna',26000)">Tambah</button></div>
-<div class="product"><span>Ayam Geprek<br>Rp 18.000</span><button onclick="addItem('Ayam Geprek',18000)">Tambah</button></div>
-<div class="product"><span>Ayam Crispy<br>Rp 19.000</span><button onclick="addItem('Ayam Crispy',19000)">Tambah</button></div>
-<div class="product"><span>Nasi Goreng Modern<br>Rp 20.000</span><button onclick="addItem('Nasi Goreng Modern',20000)">Tambah</button></div>
-<div class="product"><span>Rice Bowl Teriyaki<br>Rp 22.000</span><button onclick="addItem('Rice Bowl Teriyaki',22000)">Tambah</button></div>
-<div class="product"><span>Rice Bowl BBQ<br>Rp 22.000</span><button onclick="addItem('Rice Bowl BBQ',22000)">Tambah</button></div>
-<div class="product"><span>Steak Ayam<br>Rp 27.000</span><button onclick="addItem('Steak Ayam',27000)">Tambah</button></div>
-<div class="product"><span>Steak Sapi<br>Rp 35.000</span><button onclick="addItem('Steak Sapi',35000)">Tambah</button></div>
-<div class="product"><span>Fish & Chips<br>Rp 28.000</span><button onclick="addItem('Fish & Chips',28000)">Tambah</button></div>
-<div class="product"><span>Chicken Katsu<br>Rp 24.000</span><button onclick="addItem('Chicken Katsu',24000)">Tambah</button></div>
-<div class="product"><span>Chicken Teriyaki<br>Rp 24.000</span><button onclick="addItem('Chicken Teriyaki',24000)">Tambah</button></div>
-<div class="product"><span>Chicken Blackpepper<br>Rp 24.000</span><button onclick="addItem('Chicken Blackpepper',24000)">Tambah</button></div>
-<div class="product"><span>Beef Blackpepper<br>Rp 30.000</span><button onclick="addItem('Beef Blackpepper',30000)">Tambah</button></div>
-<div class="product"><span>Udang Crispy<br>Rp 26.000</span><button onclick="addItem('Udang Crispy',26000)">Tambah</button></div>
-<div class="product"><span>Onion Ring<br>Rp 12.000</span><button onclick="addItem('Onion Ring',12000)">Tambah</button></div>
-<div class="product"><span>Nachos<br>Rp 15.000</span><button onclick="addItem('Nachos',15000)">Tambah</button></div>
-<div class="product"><span>Loaded Fries<br>Rp 18.000</span><button onclick="addItem('Loaded Fries',18000)">Tambah</button></div>
-<div class="product"><span>Chicken Popcorn<br>Rp 17.000</span><button onclick="addItem('Chicken Popcorn',17000)">Tambah</button></div>
-<div class="product"><span>Tortilla Wrap<br>Rp 19.000</span><button onclick="addItem('Tortilla Wrap',19000)">Tambah</button></div>
-
-</div>
-
-<div id="drink" class="products" style="display:none;">
-
-<div class="product"><span>Es Teh<br>Rp 5.000</span><button onclick="addItem('Es Teh',5000)">Tambah</button></div>
-<div class="product"><span>Es Jeruk<br>Rp 6.000</span><button onclick="addItem('Es Jeruk',6000)">Tambah</button></div>
-<div class="product"><span>Kopi Hitam<br>Rp 7.000</span><button onclick="addItem('Kopi Hitam',7000)">Tambah</button></div>
-<div class="product"><span>Kopi Susu<br>Rp 12.000</span><button onclick="addItem('Kopi Susu',12000)">Tambah</button></div>
-<div class="product"><span>Americano<br>Rp 15.000</span><button onclick="addItem('Americano',15000)">Tambah</button></div>
-<div class="product"><span>Cappuccino<br>Rp 18.000</span><button onclick="addItem('Cappuccino',18000)">Tambah</button></div>
-<div class="product"><span>Latte<br>Rp 18.000</span><button onclick="addItem('Latte',18000)">Tambah</button></div>
-<div class="product"><span>Matcha Latte<br>Rp 20.000</span><button onclick="addItem('Matcha Latte',20000)">Tambah</button></div>
-<div class="product"><span>Taro Latte<br>Rp 20.000</span><button onclick="addItem('Taro Latte',20000)">Tambah</button></div>
-<div class="product"><span>Red Velvet Latte<br>Rp 20.000</span><button onclick="addItem('Red Velvet Latte',20000)">Tambah</button></div>
-<div class="product"><span>Milkshake Vanilla<br>Rp 15.000</span><button onclick="addItem('Milkshake Vanilla',15000)">Tambah</button></div>
-<div class="product"><span>Milkshake Coklat<br>Rp 15.000</span><button onclick="addItem('Milkshake Coklat',15000)">Tambah</button></div>
-<div class="product"><span>Milkshake Strawberry<br>Rp 15.000</span><button onclick="addItem('Milkshake Strawberry',15000)">Tambah</button></div>
-<div class="product"><span>Boba Milk Tea<br>Rp 18.000</span><button onclick="addItem('Boba Milk Tea',18000)">Tambah</button></div>
-<div class="product"><span>Thai Tea<br>Rp 16.000</span><button onclick="addItem('Thai Tea',16000)">Tambah</button></div>
-<div class="product"><span>Lemon Tea<br>Rp 10.000</span><button onclick="addItem('Lemon Tea',10000)">Tambah</button></div>
-<div class="product"><span>Peach Tea<br>Rp 12.000</span><button onclick="addItem('Peach Tea',12000)">Tambah</button></div>
-<div class="product"><span>Lychee Tea<br>Rp 12.000</span><button onclick="addItem('Lychee Tea',12000)">Tambah</button></div>
-<div class="product"><span>Yakult Float<br>Rp 14.000</span><button onclick="addItem('Yakult Float',14000)">Tambah</button></div>
-<div class="product"><span>Choco Float<br>Rp 14.000</span><button onclick="addItem('Choco Float',14000)">Tambah</button></div>
-<div class="product"><span>Vanilla Float<br>Rp 14.000</span><button onclick="addItem('Vanilla Float',14000)">Tambah</button></div>
-<div class="product"><span>Mango Smoothies<br>Rp 18.000</span><button onclick="addItem('Mango Smoothies',18000)">Tambah</button></div>
-<div class="product"><span>Strawberry Smoothies<br>Rp 18.000</span><button onclick="addItem('Strawberry Smoothies',18000)">Tambah</button></div>
-<div class="product"><span>Avocado Smoothies<br>Rp 20.000</span><button onclick="addItem('Avocado Smoothies',20000)">Tambah</button></div>
-<div class="product"><span>Chocolate Frappe<br>Rp 22.000</span><button onclick="addItem('Chocolate Frappe',22000)">Tambah</button></div>
-<div class="product"><span>Caramel Frappe<br>Rp 22.000</span><button onclick="addItem('Caramel Frappe',22000)">Tambah</button></div>
-<div class="product"><span>Oreo Frappe<br>Rp 22.000</span><button onclick="addItem('Oreo Frappe',22000)">Tambah</button></div>
-<div class="product"><span>Blue Ocean Soda<br>Rp 12.000</span><button onclick="addItem('Blue Ocean Soda',12000)">Tambah</button></div>
-<div class="product"><span>Green Apple Soda<br>Rp 12.000</span><button onclick="addItem('Green Apple Soda',12000)">Tambah</button></div>
-<div class="product"><span>Cola Float<br>Rp 13.000</span><button onclick="addItem('Cola Float',13000)">Tambah</button></div>
-
-</div>
-
+<div class="menu-area">
+<div id="menuList" class="grid"></div>
 </div>
 </div>
 
-<div class="box">
+<div class="box" id="cartPage">
 <h2>Keranjang</h2>
 <div id="cart"></div>
-<div class="total">Total: <span id="total">Rp 0</span></div>
+<h3>Total: Rp <span id="total">0</span></h3>
 
-<label>Uang Bayar</label>
-<input type="text" id="pay" placeholder="100.000" oninput="formatInput(this)">
-<div class="total">Kembalian: <span id="change">Rp 0</span></div>
+<input type="text" id="pay" placeholder="Nominal" oninput="formatPay(this)">
+<button class="btn" onclick="hitung()">Hitung</button>
 
-<button onclick="calculateChange()">Hitung</button>
-<button class="print" onclick="printReceipt()">Cetak Struk</button>
-<button class="reset" onclick="resetCart()">Transaksi Baru</button>
+<h3>Kembalian: Rp <span id="change">0</span></h3>
+
+<button class="btn-blue btn" onclick="printStruk()">Cetak Struk</button>
+<button class="btn-green btn" onclick="reset()">Transaksi Baru</button>
 </div>
 
-</div>
+<div id="addMenuPage" class="box">
+<h2>Tambah Menu</h2>
+<input type="text" id="newName" placeholder="Nama Menu">
+<input type="number" id="newPrice" placeholder="Harga">
+<select id="newType">
+<option value="food">Makanan</option>
+<option value="drink">Minuman</option>
+</select>
+<button class="btn" onclick="addMenu()">Simpan</button>
+<button class="btn" onclick="closeAddMenu()">Kembali</button>
 </div>
 
-<div id="receipt">
-<h2 style="text-align:center;">STRUK PEMBAYARAN</h2>
-<p id="rItems"></p>
-<p id="rTotal"></p>
-<p id="rPay"></p>
-<p id="rChange"></p>
-<p style="text-align:center;">Terima Kasih</p>
 </div>
 
 <script>
-let cartData={}, total=0;
+let menus=[
+{name:"Steak Sapi",price:35000,type:"food"},
+{name:"Fish & Chips",price:28000,type:"food"},
+{name:"Chicken Katsu",price:24000,type:"food"},
+{name:"Chicken Teriyaki",price:24000,type:"food"},
+{name:"Chicken Blackpepper",price:24000,type:"food"},
+{name:"Beef Blackpepper",price:30000,type:"food"},
+{name:"Udang Crispy",price:26000,type:"food"},
+{name:"Onion Ring",price:12000,type:"food"},
+{name:"Nachos",price:15000,type:"food"},
+{name:"Loaded Fries",price:18000,type:"food"},
+{name:"Chicken Popcorn",price:17000,type:"food"},
+{name:"Tortilla Wrap",price:19000,type:"food"},
+{name:"Burger",price:20000,type:"food"},
+{name:"Pizza",price:25000,type:"food"},
+{name:"Hotdog",price:15000,type:"food"},
+{name:"Kebab",price:17000,type:"food"},
+{name:"Ramen",price:23000,type:"food"},
+{name:"Takoyaki",price:14000,type:"food"},
+{name:"Dimsum",price:13000,type:"food"},
+{name:"Spaghetti",price:22000,type:"food"},
+{name:"Lasagna",price:26000,type:"food"},
+{name:"Chicken Wings",price:21000,type:"food"},
+{name:"Sandwich",price:14000,type:"food"},
+{name:"Risotto",price:27000,type:"food"},
+{name:"BBQ Ribs",price:32000,type:"food"},
+{name:"Tempura",price:16000,type:"food"},
+{name:"Croquette",price:14000,type:"food"},
+{name:"Nugget",price:12000,type:"food"},
+{name:"French Toast",price:18000,type:"food"},
+{name:"Quesadilla",price:22000,type:"food"},
 
-function toggleMode(){document.body.classList.toggle("dark");}
-function showMenu(type){
-  document.getElementById("food").style.display = type==="food"?"grid":"none";
-  document.getElementById("drink").style.display = type==="drink"?"grid":"none";
+{name:"Es Kopi",price:15000,type:"drink"},
+{name:"Boba",price:18000,type:"drink"},
+{name:"Thai Tea",price:14000,type:"drink"},
+{name:"Matcha",price:17000,type:"drink"},
+{name:"Milkshake",price:20000,type:"drink"},
+{name:"Lemon Tea",price:10000,type:"drink"},
+{name:"Americano",price:15000,type:"drink"},
+{name:"Cappuccino",price:18000,type:"drink"},
+{name:"Latte",price:19000,type:"drink"},
+{name:"Smoothie",price:22000,type:"drink"},
+{name:"Jus Alpukat",price:16000,type:"drink"},
+{name:"Jus Mangga",price:15000,type:"drink"},
+{name:"Jus Jeruk",price:14000,type:"drink"},
+{name:"Jus Strawberry",price:17000,type:"drink"},
+{name:"Yakult Float",price:15000,type:"drink"},
+{name:"Soda Float",price:16000,type:"drink"},
+{name:"Green Tea",price:13000,type:"drink"},
+{name:"Red Velvet",price:20000,type:"drink"},
+{name:"Choco Latte",price:18000,type:"drink"},
+{name:"Ice Chocolate",price:19000,type:"drink"},
+{name:"Ice Taro",price:18000,type:"drink"},
+{name:"Ice Vanilla",price:17000,type:"drink"},
+{name:"Ice Blueberry",price:19000,type:"drink"},
+{name:"Ice Lychee",price:16000,type:"drink"},
+{name:"Ice Peach",price:16000,type:"drink"},
+{name:"Ice Melon",price:15000,type:"drink"},
+{name:"Ice Banana",price:15000,type:"drink"},
+{name:"Ice Durian",price:20000,type:"drink"},
+{name:"Ice Coconut",price:14000,type:"drink"},
+{name:"Ice Pandan",price:15000,type:"drink"}
+];
+
+let cart=[];
+let currentType="food";
+
+function format(n){return n.toLocaleString("id-ID");}
+
+function renderMenu(){
+let q=document.getElementById("search").value.toLowerCase();
+let html="";
+menus.filter(m=>m.type==currentType && m.name.toLowerCase().includes(q))
+.forEach(m=>{
+html+=`<div class="item">
+<b>${m.name}</b><br>Rp ${format(m.price)}<br>
+<button onclick="addCart('${m.name}',${m.price})">Tambah</button>
+</div>`;
+});
+document.getElementById("menuList").innerHTML=html;
 }
-function formatRupiah(num){return "Rp "+num.toLocaleString("id-ID");}
-function formatInput(el){
-  let v=el.value.replace(/\D/g,"");
-  el.value=v.replace(/\B(?=(\d{3})+(?!\d))/g,".");
+
+function showFood(){currentType="food";renderMenu();}
+function showDrink(){currentType="drink";renderMenu();}
+
+function addCart(n,p){
+cart.push({name:n,price:p});
+renderCart();
 }
-function getPay(){return parseInt(document.getElementById("pay").value.replace(/\./g,""))||0;}
 
 function renderCart(){
-  const cart=document.getElementById("cart");
-  cart.innerHTML=""; total=0;
-  for(let item in cartData){
-    let d=cartData[item];
-    let div=document.createElement("div");
-    div.className="cart-item";
-    div.innerHTML=`${item} x${d.qty} - ${formatRupiah(d.price*d.qty)}`;
-    let b=document.createElement("button");
-    b.textContent="Hapus"; b.className="delete";
-    b.onclick=()=>{delete cartData[item];renderCart();}
-    div.appendChild(b); cart.appendChild(div);
-    total+=d.price*d.qty;
-  }
-  document.getElementById("total").innerText=formatRupiah(total);
+let html=""; let t=0;
+cart.forEach(c=>{html+=`${c.name} - Rp ${format(c.price)}<br>`; t+=c.price;});
+document.getElementById("cart").innerHTML=html;
+document.getElementById("total").innerText=format(t);
 }
-function addItem(name,price){
-  cartData[name]?cartData[name].qty++:cartData[name]={price,qty:1};
-  renderCart();
-}
-function calculateChange(){
-  let change=getPay()-total;
-  document.getElementById("change").innerText=formatRupiah(change>0?change:0);
-}
-function resetCart(){
-  cartData={};renderCart();
-  document.getElementById("pay").value="";
-  document.getElementById("change").innerText="Rp 0";
-}
-function printReceipt(){
-  let text="";
-  for(let i in cartData){
-    let d=cartData[i];
-    text+=`${i} x${d.qty} = ${formatRupiah(d.price*d.qty)}<br>`;
-  }
-  document.getElementById("rItems").innerHTML=text;
-  document.getElementById("rTotal").innerText="Total: "+formatRupiah(total);
-  document.getElementById("rPay").innerText="Bayar: "+formatRupiah(getPay());
-  document.getElementById("rChange").innerText="Kembalian: "+formatRupiah(getPay()-total);
 
-  const receipt=document.getElementById("receipt");
-  receipt.style.visibility="visible";
-  window.print();
-  receipt.style.visibility="hidden";
+function formatPay(el){
+let v=el.value.replace(/\D/g,"");
+el.value=v.replace(/\B(?=(\d{3})+(?!\d))/g,".");
 }
+
+function hitung(){
+let pay=parseInt(document.getElementById("pay").value.replace(/\./g,""))||0;
+let total=cart.reduce((a,b)=>a+b.price,0);
+document.getElementById("change").innerText=format(pay-total);
+}
+
+function reset(){
+cart=[];
+renderCart();
+document.getElementById("pay").value="";
+document.getElementById("change").innerText=0;
+}
+
+function printStruk(){window.print();}
+
+function openAddMenu(){
+document.getElementById("menuPage").style.display="none";
+document.getElementById("cartPage").style.display="none";
+document.getElementById("addMenuPage").style.display="block";
+}
+
+function closeAddMenu(){
+document.getElementById("menuPage").style.display="block";
+document.getElementById("cartPage").style.display="block";
+document.getElementById("addMenuPage").style.display="none";
+}
+
+function addMenu(){
+let n=document.getElementById("newName").value;
+let p=parseInt(document.getElementById("newPrice").value);
+let t=document.getElementById("newType").value;
+if(n && p){
+menus.push({name:n,price:p,type:t});
+closeAddMenu();
+renderMenu();
+}
+}
+
+renderMenu();
 </script>
-
 </body>
 </html>
+
